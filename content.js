@@ -20,9 +20,6 @@ var innerHTML = `<div class="modal">
 <div class="modal-content">
     <span class="close-button">×</span>`;
 
-// <
-// h1 > Hello, I am a modal! < /h1> <
-
 var modal;
 var closeButton;
 
