@@ -28,3 +28,10 @@ You can also sideload this extension by following the following directions:
 4. Go back to chrome://extensions and click on "Load Unpacked"
 5. Choose the top level directory. 
 6. Enjoy :) 
+
+
+## Screenshot(s)
+
+404 Error:
+
+![alt text](img/screenshot_1.png "Screenshot 1 - 404 Error")
