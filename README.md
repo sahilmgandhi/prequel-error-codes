@@ -32,6 +32,24 @@ You can also sideload this extension by following the following directions:
 
 ## Screenshot(s)
 
-404 Error:
+308 Error:
+![alt text](img/screenshot_308.png "Permanent Redirect - 308 Error")
 
-![alt text](img/screenshot_1.png "Screenshot 1 - 404 Error")
+400 Error:
+![alt text](img/screenshot_400.png "Bad Request - 400 Error")
+
+403 Error:
+![alt text](img/screenshot_403.png "Forbidden - 403 Error")
+
+404 Error:
+![alt text](img/screenshot_404.png "Not Found - 404 Error")
+
+417 Error:
+![alt text](img/screenshot_417.png "Expectation Failed - 417 Error")
+
+500 Error:
+![alt text](img/screenshot_500.png "Internal Server Error - 500 Error")
+
+503 Error:
+![alt text](img/screenshot_503.png "Service Unavailable - 503 Error")
+
