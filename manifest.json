@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "PrequelErrorCodes",
-    "version": "1.1",
+    "version": "1.2",
 
     "description": "Change HTTP Error Codes to Prequel Memes",
     "permissions": [

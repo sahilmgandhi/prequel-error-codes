@@ -1,17 +1,17 @@
-#masthead,
-#primary {
+#prequel-modal-masthead,
+#prequel-modal-primary {
     -webkit-filter: invert(100%);
     filter: invert(100%);
     background-color: #fff;
     padding: 20px !important;
 }
 
-#masthead {
+#prequel-modal-masthead {
     background: none;
 }
 
-#masthead img,
-#primary img {
+#prequel-modal-masthead img,
+#prequel-modal-primary img {
     -webkit-filter: invert(100%);
     filter: invert(100%);
 }

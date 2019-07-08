@@ -12,11 +12,13 @@ Change your website error codes to StarWars®™ prequel memes
 6. 500 - Internal Server Error
 7. 503 - Service Unavailable
 
+Use this site https://httpstat.us/ to test that the error codes work. If you want other error codes, just make an issue on this repo and I'll address it.
+
 # How to Use
 
 ## Chrome Extension Store
 
-This extension is available on the Chrome extension store at: insert_link_here.
+This extension is available on the Chrome extension store at: [Chrome Store](https://chrome.google.com/webstore/detail/prequelerrorcodes/cdjhhanfoilmkjidljiacahphcfgjbkc?hl=en).
 
 ## Sideload
 
