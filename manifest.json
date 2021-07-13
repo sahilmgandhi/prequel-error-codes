@@ -1,12 +1,10 @@
 {
     "manifest_version": 2,
     "name": "PrequelErrorCodes",
-    "version": "1.3",
+    "version": "1.4",
 
     "description": "Change HTTP Error Codes to Prequel Memes",
-    "permissions": [
-        "activeTab"
-    ],
+    "permissions": [],
     "icons": {
         "16": "img/icon16.png",
         "48": "img/icon48.png",
