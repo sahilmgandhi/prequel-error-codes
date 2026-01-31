@@ -1,21 +1,3 @@
-#prequel-modal-masthead,
-#prequel-modal-primary {
-    -webkit-filter: invert(100%);
-    filter: invert(100%);
-    background-color: #fff;
-    padding: 20px !important;
-}
-
-#prequel-modal-masthead {
-    background: none;
-}
-
-#prequel-modal-masthead img,
-#prequel-modal-primary img {
-    -webkit-filter: invert(100%);
-    filter: invert(100%);
-}
-
 .prequel-modal {
     position: fixed;
     left: 0;
@@ -27,6 +9,7 @@
     visibility: hidden;
     transform: scale(1.1);
     transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
+    z-index: 2147483647;
 }
 
 .prequel-modal-content {
@@ -36,8 +19,10 @@
     transform: translate(-50%, -50%);
     background-color: white;
     padding: 1rem 1.5rem;
-    width: 65rem;
+    max-width: 65rem;
+    width: 90%;
     border-radius: 0.5rem;
+    box-sizing: border-box;
 }
 
 .prequel-close-button {
@@ -48,6 +33,7 @@
     cursor: pointer;
     border-radius: 0.25rem;
     background-color: lightgray;
+    font-size: 1.2rem;
 }
 
 .prequel-close-button:hover {
@@ -57,10 +43,12 @@
 .prequel-show-modal {
     opacity: 1;
     visibility: visible;
-    transform: scale(1.0);
+    transform: scale(1);
     transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
 }
 
 .prequel-img {
     width: 100%;
+    display: block;
+    margin-top: 1rem;
 }

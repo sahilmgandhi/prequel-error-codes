@@ -1,81 +1,100 @@
 // Sahil Gandhi
+// PrequelErrorCodes - Shows Star Wars prequel memes on error pages
 
-var url = window.location.href;
-console.log(url);
+(function() {
+    // Error code to title mapping
+    const ERROR_TITLES = {
+        308: "Permanent Redirect",
+        400: "Bad Request",
+        403: "Forbidden",
+        404: "Not Found",
+        417: "Expectation Failed",
+        500: "Internal Server Error",
+        503: "Service Unavailable"
+    };
 
-var xhr = new XMLHttpRequest();
-xhr.open('GET', url, true);
-xhr.send();
+    const MAX_RETRIES = 5;
+    const RETRY_DELAY_MS = 100;
 
-xhr.onreadystatechange = processRequest;
-
-var wrapper = document.createElement("div");
-
-var innerHTML = `<div class="prequel-modal">
-<div class="prequel-modal-content">
-    <span class="prequel-close-button">×</span>`;
-
-var modal;
-var closeButton;
-
-function processRequest(e) {
-  if (xhr.readyState == 4) {
-
-    let currStatus = xhr.status;
-
-    console.log("The status is: " + currStatus);
-
-    switch (currStatus) {
-      case 308:
-        innerHTML += `<h1 align="center">Permanent Redirect - 308 Error</h1>`;
-        innerHTML += `<img class="prequel-img" src="https://github.com/sahilmgandhi/prequel-error-codes/blob/master/img/error_308.png?raw=true" alt="308 Image">`;
-        break;
-      case 400:
-        innerHTML += `<h1 align="center">Bad Request - 400 Error</h1>`;
-        innerHTML += `<img class="prequel-img" src="https://github.com/sahilmgandhi/prequel-error-codes/blob/master/img/error_400.png?raw=true" alt="400 Image">`;
-        break;
-      case 403:
-        innerHTML += `<h1 align="center">Forbidden - 403 Error</h1>`;
-        innerHTML += `<img class="prequel-img" src="https://github.com/sahilmgandhi/prequel-error-codes/blob/master/img/error_403.png?raw=true" alt="403 Image">`;
-        break;
-      case 404:
-        innerHTML += `<h1 align="center">Not Found - 404 Error</h1>`;
-        innerHTML += `<img class="prequel-img" src="https://github.com/sahilmgandhi/prequel-error-codes/blob/master/img/error_404.png?raw=true" alt="404 Image">`;
-        break;
-      case 417:
-        innerHTML += `<h1 align="center">Expectation Failed - 417 Error</h1>`;
-        innerHTML += `<img class="prequel-img" src="https://github.com/sahilmgandhi/prequel-error-codes/blob/master/img/error_417.png?raw=true" alt="417 Image">`;
-        break;
-      case 500:
-        innerHTML += `<h1 align="center">Internal Server Error - 500 Error</h1>`;
-        innerHTML += `<img class="prequel-img" src="https://github.com/sahilmgandhi/prequel-error-codes/blob/master/img/error_500.png?raw=true" alt="500 Image">`;
-        break;
-      case 503:
-        innerHTML += `<h1 align="center">Service Unavailable - 503 Error</h1>`;
-        innerHTML += `<img class="prequel-img" src="https://github.com/sahilmgandhi/prequel-error-codes/blob/master/img/error_503.png?raw=true" alt="503 Image">`;
-        break;
-      default:
-        if (currStatus != 200 && currStatus != 201 && currStatus != 202 && currStatus != 203 && currStatus != 204 && currStatus != 205 && currStatus != 206 && currStatus != 207 && currStatus != 208 && currStatus != 226) {
-          innerHTML += `<h1 align="center"> Misc. ` + currStatus + ` Error</h1>`;
-          innerHTML += `<img class="prequel-img" src="https://github.com/sahilmgandhi/prequel-error-codes/blob/master/img/error_misc.png?raw=true" alt="Misc Image">`;
-        } else {
-          return;
+    // Request status with retry logic to handle race condition with service worker
+    function requestStatus(attempt) {
+        if (attempt > MAX_RETRIES) {
+            return;
         }
+
+        chrome.runtime.sendMessage({ type: "getStatus", url: window.location.href }, function(response) {
+            if (chrome.runtime.lastError) {
+                return;
+            }
+
+            if (response && response.status !== null) {
+                showErrorModal(response.status);
+            } else if (attempt < MAX_RETRIES) {
+                // Retry with exponential backoff
+                setTimeout(function() {
+                    requestStatus(attempt + 1);
+                }, RETRY_DELAY_MS * attempt);
+            }
+        });
     }
 
-    innerHTML += `</div> </div>`;
-    wrapper.innerHTML = innerHTML;
+    // Start requesting status
+    requestStatus(1);
 
-    // Show the modal
-    document.body.appendChild(wrapper);
-    modal = document.querySelector(".prequel-modal");
-    modal.classList.toggle("prequel-show-modal");
+    function showErrorModal(status) {
+        // Only show for error codes (300+ or network error 0)
+        if (status > 0 && status < 300) {
+            return;
+        }
 
-    closeButton = document.querySelector(".prequel-close-button");
-    closeButton.addEventListener("click", toggleModal);
-  }
-}
+        // Guard for non-HTML pages (XML, SVG, PDF, etc.)
+        if (!document.body) {
+            return;
+        }
 
-function toggleModal() {
-  modal.classList.toggle("prequel-show-modal");
-}
+        const errorTitle = ERROR_TITLES[status];
+        const title = errorTitle
+            ? `${errorTitle} - ${status} Error`
+            : `Misc. ${status} Error`;
+        const imageName = errorTitle
+            ? `error_${status}.png`
+            : "error_misc.png";
+        const imageUrl = chrome.runtime.getURL(`img/${imageName}`);
+
+        // Create modal elements
+        const wrapper = document.createElement("div");
+        wrapper.innerHTML = `
+            <div class="prequel-modal">
+                <div class="prequel-modal-content">
+                    <span class="prequel-close-button">&times;</span>
+                    <h1 style="text-align: center;">${title}</h1>
+                    <img class="prequel-img" src="${imageUrl}" alt="${title}">
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(wrapper);
+
+        const modal = wrapper.querySelector(".prequel-modal");
+        const closeButton = wrapper.querySelector(".prequel-close-button");
+
+        modal.classList.add("prequel-show-modal");
+
+        function closeModal() {
+            modal.classList.remove("prequel-show-modal");
+            // Remove from DOM after transition to prevent memory leak
+            setTimeout(function() {
+                if (wrapper.parentNode) {
+                    wrapper.parentNode.removeChild(wrapper);
+                }
+            }, 300);
+        }
+
+        closeButton.addEventListener("click", closeModal, { once: true });
+        modal.addEventListener("click", function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        }, { once: true });
+    }
+})();

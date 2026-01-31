@@ -1,18 +1,27 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "PrequelErrorCodes",
-    "version": "1.4",
+    "version": "2.0",
 
     "description": "Change HTTP Error Codes to Prequel Memes",
-    "permissions": [],
+    "permissions": ["webRequest", "storage", "tabs"],
+    "host_permissions": ["<all_urls>"],
     "icons": {
         "16": "img/icon16.png",
         "48": "img/icon48.png",
-       "128": "img/icon128.png"
-      },
+        "128": "img/icon128.png"
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
     "content_scripts": [{
         "css": ["styles.css"],
-        "js": ["jquery.min.js", "content.js"],
+        "js": ["content.js"],
+        "matches": ["<all_urls>"],
+        "run_at": "document_idle"
+    }],
+    "web_accessible_resources": [{
+        "resources": ["img/*.png"],
         "matches": ["<all_urls>"]
     }]
 }
