@@ -4,8 +4,11 @@
     "version": "2.0",
 
     "description": "Change HTTP Error Codes to Prequel Memes",
-    "permissions": ["webRequest", "storage", "tabs"],
-    "host_permissions": ["<all_urls>"],
+    "permissions": ["webRequest", "storage"],
+    "host_permissions": [
+        "http://*/*",
+        "https://*/*"
+    ],
     "icons": {
         "16": "img/icon16.png",
         "48": "img/icon48.png",
@@ -17,11 +20,11 @@
     "content_scripts": [{
         "css": ["styles.css"],
         "js": ["content.js"],
-        "matches": ["<all_urls>"],
+        "matches": ["http://*/*", "https://*/*"],
         "run_at": "document_idle"
     }],
     "web_accessible_resources": [{
         "resources": ["img/*.png"],
-        "matches": ["<all_urls>"]
+        "matches": ["http://*/*", "https://*/*"]
     }]
 }
