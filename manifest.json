@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "PrequelErrorCodes",
-    "version": "2.0",
+    "version": "2.1.0",
 
     "description": "Change HTTP Error Codes to Prequel Memes",
     "permissions": ["webRequest", "storage"],
@@ -21,7 +21,7 @@
         "css": ["styles.css"],
         "js": ["content.js"],
         "matches": ["http://*/*", "https://*/*"],
-        "run_at": "document_idle"
+        "run_at": "document_end"
     }],
     "web_accessible_resources": [{
         "resources": ["img/*.png"],

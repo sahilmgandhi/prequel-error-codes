@@ -1,67 +1,47 @@
-// Sahil Gandhi
-// PrequelErrorCodes - Shows Star Wars prequel memes on error pages
-
 (function() {
-    // Error code to title mapping
-    const ERROR_TITLES = {
-        308: "Permanent Redirect",
-        400: "Bad Request",
-        403: "Forbidden",
-        404: "Not Found",
-        417: "Expectation Failed",
-        500: "Internal Server Error",
-        503: "Service Unavailable"
-    };
+    const ERROR_TITLES = new Map([
+        [308, "Permanent Redirect"],
+        [400, "Bad Request"],
+        [403, "Forbidden"],
+        [404, "Not Found"],
+        [417, "Expectation Failed"],
+        [500, "Internal Server Error"],
+        [503, "Service Unavailable"]
+    ]);
 
-    const MAX_RETRIES = 5;
-    const RETRY_DELAY_MS = 100;
-
-    // Request status with retry logic to handle race condition with service worker
-    function requestStatus(attempt) {
-        if (attempt > MAX_RETRIES) {
-            return;
-        }
-
+    function requestStatus() {
         chrome.runtime.sendMessage({ type: "getStatus", url: window.location.href }, function(response) {
-            if (chrome.runtime.lastError) {
-                return;
-            }
-
+            if (chrome.runtime.lastError) return;
             if (response && response.status !== null) {
                 showErrorModal(response.status);
-            } else if (attempt < MAX_RETRIES) {
-                // Retry with exponential backoff
+            } else {
                 setTimeout(function() {
-                    requestStatus(attempt + 1);
-                }, RETRY_DELAY_MS * attempt);
+                    chrome.runtime.sendMessage({ type: "getStatus", url: window.location.href }, function(r) {
+                        if (chrome.runtime.lastError) return;
+                        if (r && r.status !== null) {
+                            showErrorModal(r.status);
+                        }
+                    });
+                }, 200);
             }
         });
     }
 
-    // Start requesting status
-    requestStatus(1);
+    requestStatus();
 
     function showErrorModal(status) {
-        // Only show for error codes (300+ or network error 0)
-        if (status > 0 && status < 300) {
-            return;
-        }
+        if (status > 0 && status < 300) return;
+        if (!document.body) return;
 
-        // Guard for non-HTML pages (XML, SVG, PDF, etc.)
-        if (!document.body) {
-            return;
-        }
-
-        const errorTitle = ERROR_TITLES[status];
-        const title = errorTitle
-            ? `${errorTitle} - ${status} Error`
+        const known = ERROR_TITLES.has(status);
+        const title = known
+            ? `${ERROR_TITLES.get(status)} - ${status} Error`
             : `Misc. ${status} Error`;
-        const imageName = errorTitle
+        const imageName = known
             ? `error_${status}.png`
             : "error_misc.png";
         const imageUrl = chrome.runtime.getURL(`img/${imageName}`);
 
-        // Create modal elements
         const wrapper = document.createElement("div");
         wrapper.innerHTML = `
             <div class="prequel-modal">
@@ -82,7 +62,6 @@
 
         function closeModal() {
             modal.classList.remove("prequel-show-modal");
-            // Remove from DOM after transition to prevent memory leak
             setTimeout(function() {
                 if (wrapper.parentNode) {
                     wrapper.parentNode.removeChild(wrapper);
@@ -97,4 +76,7 @@
             }
         }, { once: true });
     }
+
+    globalThis.__PrequelTest ??= {};
+    Object.assign(globalThis.__PrequelTest, { showErrorModal, requestStatus, ERROR_TITLES });
 })();
