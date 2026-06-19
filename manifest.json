@@ -23,7 +23,11 @@
         "run_at": "document_end"
     }],
     "web_accessible_resources": [{
-        "resources": ["img/*.png"],
+        "resources": [
+            "img/error_308.png", "img/error_400.png", "img/error_403.png",
+            "img/error_404.png", "img/error_417.png", "img/error_500.png",
+            "img/error_503.png", "img/error_misc.png"
+        ],
         "matches": ["http://*/*", "https://*/*"]
     }]
 }
