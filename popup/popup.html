@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prequel Error Codes</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            width: 300px;
+            margin: 0;
+            padding: 12px;
+            box-sizing: border-box;
+        }
+        h1 {
+            font-size: 14px;
+            margin: 0 0 12px 0;
+            color: #333;
+        }
+        .section-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #888;
+            margin: 16px 0 6px 0;
+        }
+        .current-site {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            background: #f5f5f5;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #333;
+            word-break: break-all;
+        }
+        .toggle-btn {
+            flex-shrink: 0;
+            padding: 4px 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .toggle-btn.unblocked {
+            background: #dc3545;
+            color: #fff;
+        }
+        .toggle-btn.blocked {
+            background: #28a745;
+            color: #fff;
+        }
+        .toggle-btn:hover {
+            opacity: 0.9;
+        }
+        .blocked-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .blocked-list:empty::after {
+            content: "No blocked sites";
+            display: block;
+            font-size: 12px;
+            color: #999;
+            padding: 6px 0;
+        }
+        .blocked-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 10px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            font-size: 12px;
+            color: #333;
+        }
+        .blocked-item span {
+            word-break: break-all;
+            flex: 1;
+        }
+        .remove-btn {
+            flex-shrink: 0;
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0 4px;
+            line-height: 1;
+        }
+        .remove-btn:hover {
+            color: #a71d2a;
+        }
+        .empty-state {
+            font-size: 12px;
+            color: #999;
+            padding: 6px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Prequel Error Codes</h1>
+    <div class="section-label">Current site</div>
+    <div class="current-site">
+        <span id="current-domain"></span>
+        <button id="toggle-btn" class="toggle-btn"></button>
+    </div>
+    <div class="section-label">Blocked sites</div>
+    <ul id="blocked-list" class="blocked-list"></ul>
+    <script src="popup.js"></script>
+</body>
+</html>

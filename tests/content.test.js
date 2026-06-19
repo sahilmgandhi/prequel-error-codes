@@ -1,8 +1,16 @@
 beforeEach(() => {
     document.documentElement.innerHTML = "<html><body></body></html>";
     jest.resetModules();
+    jest.useRealTimers();
     chrome.runtime.sendMessage.mockClear();
     chrome.runtime.lastError = undefined;
+    __resetChromeStorage();
+    chrome.storage.local.get.mockImplementation(async (key, cb) => {
+        const result = {};
+        if (typeof key === "string") result[key] = [];
+        if (cb) cb(result);
+        return result;
+    });
 });
 
 const loadContentScript = () => {
@@ -87,6 +95,48 @@ describe("showErrorModal", () => {
         expect(document.querySelector(".prequel-modal")).toBeNull();
         jest.useRealTimers();
     });
+
+    test("Escape key closes the modal", () => {
+        jest.useFakeTimers();
+        mod.showErrorModal(404);
+
+        document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+
+        jest.advanceTimersByTime(300);
+        expect(document.querySelector(".prequel-modal")).toBeNull();
+        jest.useRealTimers();
+    });
+
+    test("shows 'Don't show on this site' link", () => {
+        mod.showErrorModal(404);
+        const link = document.querySelector("#prequel-dont-show");
+        expect(link).not.toBeNull();
+        expect(link.textContent).toBe("Don't show on this site");
+    });
+
+    test("'Don't show' link adds domain to block list and shows toast", () => {
+        jest.useFakeTimers();
+        const mod = loadContentScript();
+        const domain = mod.getCurrentDomain();
+        mod.showErrorModal(404);
+
+        const link = document.querySelector("#prequel-dont-show");
+        link.click();
+
+        jest.advanceTimersByTime(500);
+
+        expect(chrome.storage.local.set).toHaveBeenCalled();
+        const setCall = chrome.storage.local.set.mock.calls[0][0];
+        expect(setCall.blockedSites).toContain(domain);
+
+        expect(document.querySelector(".prequel-modal")).toBeNull();
+
+        const toast = document.querySelector(".prequel-toast");
+        expect(toast).not.toBeNull();
+        expect(toast.textContent).toContain("Blocked on " + domain);
+
+        jest.useRealTimers();
+    });
 });
 
 describe("ERROR_TITLES Map", () => {
@@ -97,5 +147,111 @@ describe("ERROR_TITLES Map", () => {
             expect(mod.ERROR_TITLES.has(code)).toBe(true);
         }
         expect(mod.ERROR_TITLES.size).toBe(7);
+    });
+});
+
+describe("getCurrentDomain", () => {
+    test("returns hostname from window.location", () => {
+        const mod = loadContentScript();
+        const domain = mod.getCurrentDomain();
+        expect(domain).toBeTruthy();
+        expect(typeof domain).toBe("string");
+    });
+});
+
+describe("isDomainBlocked", () => {
+    test("returns true for exact match", () => {
+        const mod = loadContentScript();
+        expect(mod.isDomainBlocked("example.com", ["example.com"])).toBe(true);
+    });
+
+    test("returns false for non-matching domain", () => {
+        const mod = loadContentScript();
+        expect(mod.isDomainBlocked("other.com", ["example.com"])).toBe(false);
+    });
+
+    test("returns false for empty blocked list", () => {
+        const mod = loadContentScript();
+        expect(mod.isDomainBlocked("example.com", [])).toBe(false);
+    });
+});
+
+describe("showToast", () => {
+    test("creates a toast element", () => {
+        const mod = loadContentScript();
+        mod.showToast("test.com");
+
+        const toast = document.querySelector(".prequel-toast");
+        expect(toast).not.toBeNull();
+        expect(toast.textContent).toContain("Blocked on test.com");
+        expect(toast.textContent).toContain("Undo");
+    });
+
+    test("toast is added to the DOM with correct text", () => {
+        const mod = loadContentScript();
+        mod.showToast("test.com");
+
+        const toast = document.querySelector(".prequel-toast");
+        expect(toast).not.toBeNull();
+        expect(toast.textContent).toContain("Blocked on test.com");
+        expect(toast.textContent).toContain("Undo");
+    });
+
+    test("toast auto-dismisses after 2s", () => {
+        jest.useFakeTimers();
+        const mod = loadContentScript();
+        mod.showToast("test.com");
+
+        jest.advanceTimersByTime(2000);
+
+        const toast = document.querySelector(".prequel-toast");
+        expect(toast.classList.contains("prequel-toast-show")).toBe(false);
+
+        jest.advanceTimersByTime(300);
+        expect(document.querySelector(".prequel-toast")).toBeNull();
+
+        jest.useRealTimers();
+    });
+
+    test("undo link removes domain from block list", () => {
+        const mod = loadContentScript();
+        mod.showToast("test.com");
+
+        const undoLink = document.querySelector("#prequel-undo");
+        undoLink.click();
+
+        expect(chrome.storage.local.set).toHaveBeenCalled();
+        const setCall = chrome.storage.local.set.mock.calls[0][0];
+        expect(setCall.blockedSites).not.toContain("test.com");
+    });
+});
+
+describe("requestStatus", () => {
+    test("does not show modal if domain is blocked", async () => {
+        chrome.storage.local.get.mockImplementation(async (key, cb) => {
+            const result = { blockedSites: ["example.com"] };
+            if (cb) cb(result);
+            return result;
+        });
+
+        const mod = loadContentScript();
+        await new Promise(process.nextTick);
+        await new Promise(process.nextTick);
+
+        expect(document.querySelector(".prequel-modal")).toBeNull();
+    });
+
+    test("shows modal if domain is not blocked", async () => {
+        chrome.storage.local.get.mockImplementation(async (key, cb) => {
+            const result = { blockedSites: ["other.com"] };
+            if (cb) cb(result);
+            return result;
+        });
+
+        const mod = loadContentScript();
+        await new Promise(process.nextTick);
+        await new Promise(process.nextTick);
+
+        expect(chrome.runtime.sendMessage).toHaveBeenCalled();
     });
 });

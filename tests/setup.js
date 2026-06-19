@@ -1,4 +1,5 @@
 const storageData = {};
+const localStorageData = {};
 const registeredCallbacks = {};
 
 globalThis.chrome = {
@@ -29,6 +30,36 @@ globalThis.chrome = {
         }
       }),
     },
+    local: {
+      get: jest.fn(async (key, cb) => {
+        let result;
+        if (key === null) {
+          result = { ...localStorageData };
+        } else if (typeof key === "string") {
+          const val = localStorageData[key];
+          result = val !== undefined ? { [key]: val } : {};
+        } else if (Array.isArray(key)) {
+          result = {};
+          for (const k of key) {
+            if (localStorageData[k] !== undefined) result[k] = localStorageData[k];
+          }
+        } else {
+          result = {};
+        }
+        if (typeof cb === "function") cb(result);
+        return result;
+      }),
+      set: jest.fn(async (items, cb) => {
+        Object.assign(localStorageData, items);
+        if (typeof cb === "function") cb();
+      }),
+      remove: jest.fn(async (keys) => {
+        const list = Array.isArray(keys) ? keys : [keys];
+        for (const k of list) {
+          delete localStorageData[k];
+        }
+      }),
+    },
   },
   webRequest: {
     onCompleted: {
@@ -55,6 +86,11 @@ globalThis.chrome = {
     lastError: undefined,
   },
   tabs: {
+    query: jest.fn(async (opts, cb) => {
+      const result = [{ url: "https://example.com/test" }];
+      if (cb) cb(result);
+      return result;
+    }),
     onRemoved: {
       addListener: jest.fn((cb) => {
         registeredCallbacks.tabRemoved = cb;
@@ -65,6 +101,7 @@ globalThis.chrome = {
 
 globalThis.__resetChromeStorage = () => {
   Object.keys(storageData).forEach((k) => delete storageData[k]);
+  Object.keys(localStorageData).forEach((k) => delete localStorageData[k]);
 };
 
 globalThis.__getRegisteredCallbacks = () => registeredCallbacks;

@@ -13,6 +13,7 @@ zip -r "$OUTPUT" \
     background.js \
     content.js \
     styles.css \
+    popup/ \
     img/ \
     --exclude "*.DS_Store" "*.gitkeep"
 
