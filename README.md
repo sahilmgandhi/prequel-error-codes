@@ -14,6 +14,16 @@ Change your website error codes to StarWars®™ prequel memes
 
 Use this site https://httpstat.us/ to test that the error codes work. If you want other error codes, just make an issue on this repo and I'll address it.
 
+## Per-Site Block List
+
+You can block the extension from showing on specific sites:
+
+- **Popup**: Click the extension icon to see the current site and toggle blocking it. View and manage all blocked sites in the list below.
+- **On the modal**: Click "Don't show on this site" to silently block future error modals on that domain.
+- **Undo**: After blocking, a toast appears with an Undo link. Blocked sites can also be removed from the popup list.
+
+Blocked sites are stored locally in `chrome.storage.local` and do not sync across devices.
+
 # How to Use
 
 ## Chrome Extension Store

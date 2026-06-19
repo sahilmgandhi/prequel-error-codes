@@ -7,3 +7,23 @@ Be brief/concise. Do not start implementation work until the plan is approved.
 3. Then, put on your code reviewer hat and review the code that is written to catch bugs and other errors. 
 
 4. Please use concise git commit messages
+
+## Packaging for Chrome Web Store
+
+Bump `version` in `manifest.json` before each upload (CWS rejects same-version uploads).
+
+Build a clean extension zip (no tests, no dev files):
+
+```bash
+cd /path/to/prequel-error-codes
+zip -r ~/Desktop/Github/prequel-error-codes.zip \
+  manifest.json background.js content.js styles.css popup/ img/ \
+  -x "*.DS_Store" "img/screenshot*" "img/rawErrorCodes.png" "img/emperor.jpg"
+```
+
+## jsdom test gotchas
+
+- `window.location.href` defaults to `http://localhost/` in jsdom — tests must use the actual domain from `getCurrentDomain()` rather than hardcoding `example.com`.
+- `requestAnimationFrame` is **not** intercepted by `jest.useFakeTimers()` — use DOM assertions instead of animation class checks.
+- `jest.runAllTimers()` fires **all** timers including long ones (e.g. 2s auto-dismiss). Use `jest.advanceTimersByTime(ms)` to target specific timers.
+- `chrome.storage.local.get`/`set` use callback style in production — mocks must call the callback, not just return a promise.
