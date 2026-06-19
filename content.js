@@ -58,7 +58,7 @@
         var toast = document.createElement("div");
         toast.className = "prequel-toast";
 
-        var text = document.createTextNode("Blocked on " + domain + " ");
+        var text = document.createTextNode("Disabled on " + domain + " ");
         toast.appendChild(text);
 
         var undoLink = document.createElement("a");

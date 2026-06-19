@@ -91,17 +91,17 @@ describe("popup rendering", () => {
         expect(document.getElementById("current-domain").textContent).toBe("example.com");
     });
 
-    test("shows Block button for unblocked site", async () => {
+    test("shows Disable button for unblocked site", async () => {
         const mod = loadPopup();
         await new Promise(process.nextTick);
         await new Promise(process.nextTick);
 
         const btn = document.getElementById("toggle-btn");
-        expect(btn.textContent).toBe("Block");
+        expect(btn.textContent).toBe("Disable");
         expect(btn.classList.contains("unblocked")).toBe(true);
     });
 
-    test("toggle button changes to Unblock after blocking", async () => {
+    test("toggle button changes to Enable after disabling", async () => {
         const mod = loadPopup();
         await new Promise(process.nextTick);
         await new Promise(process.nextTick);
@@ -110,7 +110,7 @@ describe("popup rendering", () => {
         btn.click();
         await new Promise(process.nextTick);
 
-        expect(btn.textContent).toBe("Unblock");
+        expect(btn.textContent).toBe("Enable");
         expect(btn.classList.contains("blocked")).toBe(true);
     });
 

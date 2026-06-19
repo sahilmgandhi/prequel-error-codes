@@ -63,7 +63,7 @@
             overflow-y: auto;
         }
         .blocked-list:empty::after {
-            content: "No blocked sites";
+            content: "No disabled sites";
             display: block;
             font-size: 12px;
             color: #999;
@@ -111,7 +111,7 @@
         <span id="current-domain"></span>
         <button id="toggle-btn" class="toggle-btn"></button>
     </div>
-    <div class="section-label">Blocked sites</div>
+    <div class="section-label">Disabled for site</div>
     <ul id="blocked-list" class="blocked-list"></ul>
     <script src="popup.js"></script>
 </body>

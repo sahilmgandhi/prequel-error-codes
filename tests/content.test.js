@@ -133,7 +133,7 @@ describe("showErrorModal", () => {
 
         const toast = document.querySelector(".prequel-toast");
         expect(toast).not.toBeNull();
-        expect(toast.textContent).toContain("Blocked on " + domain);
+        expect(toast.textContent).toContain("Disabled on " + domain);
 
         jest.useRealTimers();
     });
@@ -183,7 +183,7 @@ describe("showToast", () => {
 
         const toast = document.querySelector(".prequel-toast");
         expect(toast).not.toBeNull();
-        expect(toast.textContent).toContain("Blocked on test.com");
+        expect(toast.textContent).toContain("Disabled on test.com");
         expect(toast.textContent).toContain("Undo");
     });
 
@@ -193,7 +193,7 @@ describe("showToast", () => {
 
         const toast = document.querySelector(".prequel-toast");
         expect(toast).not.toBeNull();
-        expect(toast.textContent).toContain("Blocked on test.com");
+        expect(toast.textContent).toContain("Disabled on test.com");
         expect(toast.textContent).toContain("Undo");
     });
 

@@ -32,7 +32,7 @@
         if (currentDomain) {
             const blocked = isBlocked(currentDomain);
             currentDomainEl.textContent = currentDomain;
-            toggleBtn.textContent = blocked ? "Unblock" : "Block";
+            toggleBtn.textContent = blocked ? "Enable" : "Disable";
             toggleBtn.className = "toggle-btn " + (blocked ? "blocked" : "unblocked");
             toggleBtn.style.display = "";
         } else {
