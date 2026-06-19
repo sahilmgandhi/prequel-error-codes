@@ -110,6 +110,24 @@ describe("runtime message handling", () => {
         const result = listener({ type: "somethingElse" }, {}, jest.fn());
         expect(result).toBe(false);
     });
+
+    test("returns null when cache lookup throws", () => {
+        const mod = loadBackground();
+        const originalGet = mod.statusCache.get.bind(mod.statusCache);
+        mod.statusCache.get = () => { throw new Error("broken"); };
+
+        const sendResponse = jest.fn();
+        const listener = __getRegisteredCallbacks().runtimeMessage;
+
+        listener(
+            { type: "getStatus" },
+            { tab: { id: 1 } },
+            sendResponse
+        );
+
+        expect(sendResponse).toHaveBeenCalledWith({ status: null });
+        mod.statusCache.get = originalGet;
+    });
 });
 
 describe("tab cleanup", () => {

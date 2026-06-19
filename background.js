@@ -42,8 +42,12 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
         return false;
     }
 
-    const entry = statusCache.get(sender.tab.id);
-    sendResponse({ status: entry ? entry.status : null });
+    try {
+        const entry = statusCache.get(sender.tab.id);
+        sendResponse({ status: entry ? entry.status : null });
+    } catch (e) {
+        sendResponse({ status: null });
+    }
     return false;
 });
 
