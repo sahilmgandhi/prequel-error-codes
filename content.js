@@ -109,24 +109,43 @@
         const domain = getCurrentDomain();
 
         const wrapper = document.createElement("div");
-        wrapper.innerHTML = `
-            <div class="prequel-modal">
-                <div class="prequel-modal-content">
-                    <span class="prequel-close-button">&times;</span>
-                    <h1 style="text-align: center;">${title}</h1>
-                    <img class="prequel-img" src="${imageUrl}" alt="${title}">
-                    <div class="prequel-block-link">
-                        <a href="#" id="prequel-dont-show">Don't show on this site</a>
-                    </div>
-                </div>
-            </div>
-        `;
+
+        const modal = document.createElement("div");
+        modal.className = "prequel-modal";
+
+        const content = document.createElement("div");
+        content.className = "prequel-modal-content";
+
+        const closeButton = document.createElement("span");
+        closeButton.className = "prequel-close-button";
+        closeButton.textContent = "\u00d7";
+
+        const heading = document.createElement("h1");
+        heading.style.textAlign = "center";
+        heading.textContent = title;
+
+        const img = document.createElement("img");
+        img.className = "prequel-img";
+        img.src = imageUrl;
+        img.alt = title;
+
+        const blockLinkContainer = document.createElement("div");
+        blockLinkContainer.className = "prequel-block-link";
+
+        const blockLink = document.createElement("a");
+        blockLink.href = "#";
+        blockLink.id = "prequel-dont-show";
+        blockLink.textContent = "Don't show on this site";
+
+        blockLinkContainer.appendChild(blockLink);
+        content.appendChild(closeButton);
+        content.appendChild(heading);
+        content.appendChild(img);
+        content.appendChild(blockLinkContainer);
+        modal.appendChild(content);
+        wrapper.appendChild(modal);
 
         document.body.appendChild(wrapper);
-
-        const modal = wrapper.querySelector(".prequel-modal");
-        const closeButton = wrapper.querySelector(".prequel-close-button");
-        const blockLink = wrapper.querySelector("#prequel-dont-show");
 
         modal.classList.add("prequel-show-modal");
 
