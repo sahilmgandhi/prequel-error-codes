@@ -1,35 +1,22 @@
 const CACHE_TTL_MS = 30000;
-const STORAGE_KEY_PREFIX = "tab_";
+const statusCache = new Map();
 let lastCleanupTime = 0;
 
-async function cleanupOldEntries() {
+function cleanupOldEntries() {
     const now = Date.now();
     if (now - lastCleanupTime < CACHE_TTL_MS) return;
     lastCleanupTime = now;
 
-    const data = await chrome.storage.session.get(null);
-    const keysToRemove = [];
-
-    for (const [key, value] of Object.entries(data)) {
-        if (key.startsWith(STORAGE_KEY_PREFIX) && value.timestamp && now - value.timestamp > CACHE_TTL_MS) {
-            keysToRemove.push(key);
+    for (const [tabId, entry] of statusCache) {
+        if (now - entry.timestamp > CACHE_TTL_MS) {
+            statusCache.delete(tabId);
         }
-    }
-
-    if (keysToRemove.length > 0) {
-        await chrome.storage.session.remove(keysToRemove);
     }
 }
 
-async function cacheStatus(tabId, url, status) {
-    await chrome.storage.session.set({
-        [`${STORAGE_KEY_PREFIX}${tabId}`]: {
-            url,
-            status,
-            timestamp: Date.now()
-        }
-    });
-    cleanupOldEntries().catch(() => {});
+function cacheStatus(tabId, url, status) {
+    statusCache.set(tabId, { url, status, timestamp: Date.now() });
+    cleanupOldEntries();
 }
 
 chrome.webRequest.onCompleted.addListener(
@@ -55,23 +42,13 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
         return false;
     }
 
-    (async function() {
-        const key = `${STORAGE_KEY_PREFIX}${sender.tab.id}`;
-        const data = await chrome.storage.session.get(key);
-        const entry = data[key];
-
-        if (entry) {
-            sendResponse({ status: entry.status });
-        } else {
-            sendResponse({ status: null });
-        }
-    })();
-
-    return true;
+    const entry = statusCache.get(sender.tab.id);
+    sendResponse({ status: entry ? entry.status : null });
+    return false;
 });
 
 chrome.tabs.onRemoved.addListener(function(tabId) {
-    chrome.storage.session.remove(`${STORAGE_KEY_PREFIX}${tabId}`);
+    statusCache.delete(tabId);
 });
 
-globalThis.__PrequelTest = { cacheStatus, cleanupOldEntries, CACHE_TTL_MS };
+globalThis.__PrequelTest = { cacheStatus, cleanupOldEntries, CACHE_TTL_MS, statusCache };
