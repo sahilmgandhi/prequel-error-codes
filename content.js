@@ -100,6 +100,7 @@
     function showErrorModal(status) {
         if (status > 0 && status < 300) return;
         if (!document.body) return;
+        if (document.querySelector(".prequel-modal")) return;
 
         const known = ERROR_TITLES.has(status);
         const title = known

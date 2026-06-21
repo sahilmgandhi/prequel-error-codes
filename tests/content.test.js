@@ -72,6 +72,14 @@ describe("showErrorModal", () => {
         bodySpy.mockRestore();
     });
 
+    test("does not create a second modal if one is already open", () => {
+        mod.showErrorModal(404);
+        expect(document.querySelectorAll(".prequel-modal").length).toBe(1);
+
+        mod.showErrorModal(500);
+        expect(document.querySelectorAll(".prequel-modal").length).toBe(1);
+    });
+
     test("close button removes modal from DOM", () => {
         jest.useFakeTimers();
         mod.showErrorModal(404);
