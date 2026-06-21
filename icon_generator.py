@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 
 import sys
+from pathlib import Path
 from PIL import Image
-from PIL import ImageOps
+
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+IMG_DIR = SCRIPT_DIR / "img"
 
 
 def usage():
@@ -15,7 +19,7 @@ def main(filename):
 
     for size in icon_sizes:
         icon = src_image.resize((size, size), Image.LANCZOS)
-        icon.save('icon{size}.png'.format(size=size))
+        icon.save(IMG_DIR / f'icon{size}.png')
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
