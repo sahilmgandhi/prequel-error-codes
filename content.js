@@ -126,7 +126,6 @@
         closeButton.textContent = "\u00d7";
 
         const heading = document.createElement("h1");
-        heading.style.textAlign = "center";
         heading.textContent = title;
 
         const img = document.createElement("img");

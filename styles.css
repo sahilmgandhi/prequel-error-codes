@@ -29,6 +29,10 @@
     box-sizing: border-box;
 }
 
+.prequel-modal-content h1 {
+    text-align: center;
+}
+
 .prequel-close-button {
     float: right;
     width: 1.5rem;
