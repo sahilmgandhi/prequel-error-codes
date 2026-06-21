@@ -2,8 +2,8 @@
 
 ## Before Upload
 
-1. **Bump version** in `manifest.json` — already at 2.1.0
-2. **Run tests**: `npm test` (all 23 should pass)
+1. **Bump version** in `manifest.json` — already at 2.3.0
+2. **Run tests**: `npm test` (all 49 should pass)
 3. **Package extension**: `cd scripts && bash package.sh`
 
 ## On the Chrome Web Store Dashboard
