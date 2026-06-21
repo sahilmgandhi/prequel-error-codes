@@ -2,7 +2,7 @@
 
 ## Before Upload
 
-1. **Bump version** in `manifest.json` — already at 2.3.0
+1. **Bump version** in `manifest.json` — already at 2.4.0
 2. **Run tests**: `npm test` (all 50 should pass)
 3. **Package extension**: `./release-zip`
 
