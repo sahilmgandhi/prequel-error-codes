@@ -11,7 +11,8 @@
     ]);
     const RETRY_DELAY_MS = 200;
     const TOAST_TIMEOUT_MS = 2000;
-    const ANIMATION_DURATION_MS = 300;
+    const MODAL_ANIMATION_MS = 250;
+    const TOAST_ANIMATION_MS = 300;
 
     function getCurrentDomain() {
         try {
@@ -84,7 +85,7 @@
                 let sites = (data[STORAGE_KEY] || []).filter(function(s) { return s !== d; });
                 chrome.storage.local.set({ [STORAGE_KEY]: sites }, function() {
                     toast.classList.remove("prequel-toast-show");
-                    setTimeout(function() { toast.remove(); }, ANIMATION_DURATION_MS);
+                    setTimeout(function() { toast.remove(); }, TOAST_ANIMATION_MS);
                 });
             });
         });
@@ -92,7 +93,7 @@
         setTimeout(function() {
             if (toast.parentNode) {
                 toast.classList.remove("prequel-toast-show");
-                setTimeout(function() { toast.remove(); }, ANIMATION_DURATION_MS);
+                setTimeout(function() { toast.remove(); }, TOAST_ANIMATION_MS);
             }
         }, TOAST_TIMEOUT_MS);
     }
@@ -160,7 +161,7 @@
                 if (wrapper.parentNode) {
                     wrapper.parentNode.removeChild(wrapper);
                 }
-            }, ANIMATION_DURATION_MS);
+            }, MODAL_ANIMATION_MS);
         }
 
         function escapeHandler(e) {
