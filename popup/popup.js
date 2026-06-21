@@ -40,7 +40,7 @@
             toggleBtn.style.display = "none";
         }
 
-        blockedListEl.innerHTML = "";
+        blockedListEl.textContent = "";
         blockedSites.forEach(function(site) {
             const li = document.createElement("li");
             li.className = "blocked-item";
