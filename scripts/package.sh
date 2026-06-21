@@ -15,6 +15,6 @@ zip -r "$OUTPUT" \
     styles.css \
     popup/ \
     img/ \
-    --exclude "*.DS_Store" "*.gitkeep"
+    -x "*.DS_Store" "img/screenshot*" "img/rawErrorCodes.png" "img/emperor.jpg"
 
 echo "Created $OUTPUT"

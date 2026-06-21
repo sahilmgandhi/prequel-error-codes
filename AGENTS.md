@@ -16,9 +16,7 @@ Build a clean extension zip (no tests, no dev files):
 
 ```bash
 cd /path/to/prequel-error-codes
-zip -r ~/Desktop/Github/prequel-error-codes.zip \
-  manifest.json background.js content.js styles.css popup/ img/ \
-  -x "*.DS_Store" "img/screenshot*" "img/rawErrorCodes.png" "img/emperor.jpg"
+bash scripts/package.sh
 ```
 
 ## jsdom test gotchas
