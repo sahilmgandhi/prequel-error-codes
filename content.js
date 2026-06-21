@@ -9,6 +9,9 @@
         [500, "Internal Server Error"],
         [503, "Service Unavailable"]
     ]);
+    const RETRY_DELAY_MS = 200;
+    const TOAST_TIMEOUT_MS = 2000;
+    const ANIMATION_DURATION_MS = 300;
 
     function getCurrentDomain() {
         try {
@@ -43,7 +46,7 @@
                                 showErrorModal(r.status);
                             }
                         });
-                    }, 200);
+                    }, RETRY_DELAY_MS);
                 }
             });
         });
@@ -81,7 +84,7 @@
                 let sites = (data[STORAGE_KEY] || []).filter(function(s) { return s !== d; });
                 chrome.storage.local.set({ [STORAGE_KEY]: sites }, function() {
                     toast.classList.remove("prequel-toast-show");
-                    setTimeout(function() { toast.remove(); }, 300);
+                    setTimeout(function() { toast.remove(); }, ANIMATION_DURATION_MS);
                 });
             });
         });
@@ -89,9 +92,9 @@
         setTimeout(function() {
             if (toast.parentNode) {
                 toast.classList.remove("prequel-toast-show");
-                setTimeout(function() { toast.remove(); }, 300);
+                setTimeout(function() { toast.remove(); }, ANIMATION_DURATION_MS);
             }
-        }, 2000);
+        }, TOAST_TIMEOUT_MS);
     }
 
     function showErrorModal(status) {
@@ -156,7 +159,7 @@
                 if (wrapper.parentNode) {
                     wrapper.parentNode.removeChild(wrapper);
                 }
-            }, 300);
+            }, ANIMATION_DURATION_MS);
         }
 
         function escapeHandler(e) {
