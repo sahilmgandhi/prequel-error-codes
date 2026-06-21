@@ -24,8 +24,8 @@
 
     function requestStatus() {
         chrome.storage.local.get(STORAGE_KEY, function(data) {
-            var blockedSites = data[STORAGE_KEY] || [];
-            var domain = getCurrentDomain();
+            const blockedSites = data[STORAGE_KEY] || [];
+            const domain = getCurrentDomain();
 
             if (domain && isDomainBlocked(domain, blockedSites)) {
                 return;
@@ -52,16 +52,16 @@
     requestStatus();
 
     function showToast(domain) {
-        var existing = document.querySelector(".prequel-toast");
+        const existing = document.querySelector(".prequel-toast");
         if (existing) existing.remove();
 
-        var toast = document.createElement("div");
+        const toast = document.createElement("div");
         toast.className = "prequel-toast";
 
-        var text = document.createTextNode("Disabled on " + domain + " ");
+        const text = document.createTextNode("Disabled on " + domain + " ");
         toast.appendChild(text);
 
-        var undoLink = document.createElement("a");
+        const undoLink = document.createElement("a");
         undoLink.href = "#";
         undoLink.id = "prequel-undo";
         undoLink.textContent = "Undo";
@@ -75,10 +75,10 @@
 
         toast.querySelector("#prequel-undo").addEventListener("click", function(e) {
             e.preventDefault();
-            var d = getCurrentDomain();
+            const d = getCurrentDomain();
             if (!d) return;
             chrome.storage.local.get(STORAGE_KEY, function(data) {
-                var sites = (data[STORAGE_KEY] || []).filter(function(s) { return s !== d; });
+                let sites = (data[STORAGE_KEY] || []).filter(function(s) { return s !== d; });
                 chrome.storage.local.set({ [STORAGE_KEY]: sites }, function() {
                     toast.classList.remove("prequel-toast-show");
                     setTimeout(function() { toast.remove(); }, 300);
@@ -177,7 +177,7 @@
                 e.preventDefault();
                 e.stopPropagation();
                 chrome.storage.local.get(STORAGE_KEY, function(data) {
-                    var sites = data[STORAGE_KEY] || [];
+                    let sites = data[STORAGE_KEY] || [];
                     if (!sites.includes(domain)) {
                         sites.push(domain);
                     }

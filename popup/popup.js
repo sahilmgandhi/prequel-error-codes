@@ -71,7 +71,7 @@
         blockedSites = data[STORAGE_KEY] || [];
 
         chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-            var url;
+            let url;
             try {
                 url = new URL(tabs[0].url);
             } catch (_) {
