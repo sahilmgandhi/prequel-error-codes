@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "$(dirname "$0")"
+
+echo "Running tests..."
+if ! npm test; then
+    echo "Tests failed. Aborting."
+    exit 1
+fi
+
+VERSION=$(node -p "require('./manifest.json').version")
+NAME="prequel-error-codes"
+OUTPUT="${NAME}-${VERSION}.zip"
+
+rm -f "$OUTPUT"
+
+zip -r "$OUTPUT" \
+    manifest.json \
+    background.js \
+    content.js \
+    styles.css \
+    popup/ \
+    img/ \
+    -x "*.DS_Store" "img/screenshot*" "img/rawErrorCodes.png" "img/emperor.jpg"
+
+echo "Created ${OUTPUT}"

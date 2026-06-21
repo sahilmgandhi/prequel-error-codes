@@ -16,7 +16,7 @@ Build a clean extension zip (no tests, no dev files):
 
 ```bash
 cd /path/to/prequel-error-codes
-bash scripts/package.sh
+./release-zip
 ```
 
 ## jsdom test gotchas
